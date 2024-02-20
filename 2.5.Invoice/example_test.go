@@ -1,9 +1,10 @@
 package backoffice
 
 import (
-	"backoffice/pb"
 	"fmt"
 	"time"
+
+	"backoffice/2.5.Invoice/pb"
 
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
