@@ -1,0 +1,40 @@
+syntax = "proto3";
+    
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./pb";
+
+message Location {
+    double lat = 1;
+    double lng = 2;
+}
+
+enum RideType {
+    UNSET = 0;
+    REGULAR = 1;
+    POOL = 2;
+}
+
+message RideRequest {
+    string id = 1;
+    string driver_id = 2;
+    Location location = 3;
+    repeated string passengersIds = 4;
+    google.protobuf.Timestamp start = 5;
+    google.protobuf.Timestamp end = 6;
+    double distance = 7;
+    RideType type = 8;
+}
+
+message RideStartResponse {
+    string id = 1;
+}
+
+message RideEndResponse {
+    string id = 1;
+}
+
+service Rides {
+    rpc Start(RideRequest) returns (RideStartResponse) {}
+    rpc End(RideRequest) returns (RideEndResponse) {}
+}
