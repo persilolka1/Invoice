@@ -26,6 +26,16 @@ func main() {
 		log.Fatalf("error: can't listen - %s", err)
 	}
 
+	srv := createServer()
+
+	log.Printf("info: server ready on %s", addr)
+
+	if err := srv.Serve(lis); err != nil {
+		log.Fatalf("error: can't serve - %s", err)
+	}
+}
+
+func createServer() *grpc.Server {
 	srv := grpc.NewServer(grpc.UnaryInterceptor(interceptors.TimingInterceptor))
 
 	var u Rides
@@ -34,11 +44,7 @@ func main() {
 
 	reflection.Register(srv)
 
-	log.Printf("info: server ready on %s", addr)
-
-	if err := srv.Serve(lis); err != nil {
-		log.Fatalf("error: can't serve - %s", err)
-	}
+	return srv
 }
 
 func (r *Rides) Start(ctx context.Context, req *pb.RideRequest) (*pb.RideStartResponse, error) {
@@ -61,13 +67,6 @@ func (r *Rides) Start(ctx context.Context, req *pb.RideRequest) (*pb.RideStartRe
 
 func (r *Rides) End(ctx context.Context, req *pb.RideRequest) (*pb.RideEndResponse, error) {
 	// TODO: Validate req
-
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return nil, status.Errorf(codes.Unauthenticated, "no_metadata")
-	}
-
-	log.Printf("info: apikey %v", md["api-key"])
 
 	resp := pb.RideEndResponse{
 		Id: req.Id,
