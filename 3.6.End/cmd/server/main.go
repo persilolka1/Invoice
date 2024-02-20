@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 
+	"backoffice/3.6.End/cmd/interceptors"
 	"backoffice/3.6.End/pb"
 
 	"google.golang.org/grpc"
@@ -25,7 +26,7 @@ func main() {
 		log.Fatalf("error: can't listen - %s", err)
 	}
 
-	srv := grpc.NewServer()
+	srv := grpc.NewServer(grpc.UnaryInterceptor(interceptors.TimingInterceptor))
 
 	var u Rides
 
